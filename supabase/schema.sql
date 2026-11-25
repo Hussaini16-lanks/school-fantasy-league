@@ -202,9 +202,9 @@ grant update (display_name, team_name) on public.profiles to authenticated;
 -- ---------------------------------------------------------------------
 
 insert into public.houses (name, short_name, color) values
-  ('Madiba',    'MAD', '#E63946'),
-  ('TSG',       'TSG', '#2A9D8F'),
-  ('Cirok',     'CIR', '#F4A261'),
+  ('Madiba',    'MAD', '#111111'),
+  ('TSG',       'TSG', '#DC2626'),
+  ('Cirok',     'CIR', '#FFFFFF'),
   ('Blue Jays', 'BJ',  '#1D4ED8');
 
 -- 10 placeholder players per house, prices between 7.0 and 12.0
