@@ -1,9 +1,13 @@
+import { useAuth } from '../lib/AuthContext'
+
 export default function MyTeam() {
+  const { profile } = useAuth()
+
   return (
     <section className="placeholder">
-      <p className="eyebrow">Coming in Step 3</p>
+      <p className="eyebrow">Coming in Step 3C</p>
       <h1>My Team</h1>
-      <p>Pick your 10-player squad, set your starters and choose your captains.</p>
+      <p>Signed in as {profile?.display_name ?? '…'}. Squad builder coming next.</p>
     </section>
   )
 }
