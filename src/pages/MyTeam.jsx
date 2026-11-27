@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import HouseBadge from '../components/HouseBadge'
 import Court from '../components/Court'
 import Jersey from '../components/Jersey'
+import PlayerSheet from '../components/PlayerSheet'
 
 const fmt = (n) => Number(n).toFixed(1)
 const round1 = (n) => Math.round(n * 10) / 10
@@ -27,6 +28,7 @@ export default function MyTeam() {
   // Data from the database
   const [team, setTeam] = useState(null)        // result of get_team_state()
   const [players, setPlayers] = useState([])
+  const [selection, setSelection] = useState({}) // player id -> % of managers who picked him
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(null)
 
@@ -47,16 +49,17 @@ export default function MyTeam() {
   // ---------- Load ----------
   useEffect(() => {
     async function load() {
-      const [teamRes, playersRes] = await Promise.all([
+      const [teamRes, playersRes, selectionRes] = await Promise.all([
         supabase.rpc('get_team_state'),
         supabase
           .from('players')
           .select('id, name, position, jersey_number, price, house:houses(id, name, short_name, color)')
           .eq('active', true)
           .order('price', { ascending: false }),
+        supabase.rpc('player_selection'),
       ])
 
-      const err = teamRes.error || playersRes.error
+      const err = teamRes.error || playersRes.error || selectionRes.error
       if (err) {
         setLoadError(err.message)
         setLoading(false)
@@ -67,6 +70,7 @@ export default function MyTeam() {
       const picks = t.picks ?? []
       setTeam(t)
       setPlayers(playersRes.data)
+      setSelection(Object.fromEntries(selectionRes.data.map((r) => [r.player_id, r.selected_pct])))
       setStarters(picks.filter((p) => p.is_starter).map((p) => p.player_id))
       setBench(
         picks
@@ -275,7 +279,7 @@ export default function MyTeam() {
     )
   }
 
-  // The menu for the tapped player
+  // The card for the tapped player
   const sel = selected ? byId[selected] : null
   const selIsStarter = selected ? starters.includes(selected) : false
   const selBenchIndex = selected ? bench.indexOf(selected) : -1
@@ -343,49 +347,21 @@ export default function MyTeam() {
           )}
 
           {sel && !swapping && (
-            <div className="action-panel">
-              <div className="action-head">
-                <div className="player-info">
-                  <span className="player-name">{sel.name}</span>
-                  <span className="player-meta">
-                    <HouseBadge house={sel.house} /> · {sel.position} · {fmt(sel.price)} coins
-                  </span>
-                </div>
-                <button className="chip" onClick={() => setSelected(null)} title="Close">✕</button>
-              </div>
-              <div className="action-buttons">
-                {selIsStarter ? (
-                  <>
-                    <button className="btn-action" disabled={captain === selected}
-                            onClick={() => { makeCaptain(selected); setSelected(null) }}>
-                      Make captain
-                    </button>
-                    <button className="btn-action" disabled={vice === selected}
-                            onClick={() => { makeVice(selected); setSelected(null) }}>
-                      Make vice-captain
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button className="btn-action" disabled={selBenchIndex === 0}
-                            onClick={() => moveBench(selBenchIndex, -1)}>
-                      ← Earlier sub
-                    </button>
-                    <button className="btn-action" disabled={selBenchIndex === bench.length - 1}
-                            onClick={() => moveBench(selBenchIndex, 1)}>
-                      Later sub →
-                    </button>
-                  </>
-                )}
-                <button className="btn-action"
-                        onClick={() => { const id = selected; setSelected(null); handleSwap(id) }}>
-                  {selIsStarter ? 'Sub out' : 'Sub in'}
-                </button>
-                <button className="btn-action danger" onClick={() => removePlayer(selected)}>
-                  Remove
-                </button>
-              </div>
-            </div>
+            <PlayerSheet
+              player={sel}
+              isStarter={selIsStarter}
+              benchIndex={selBenchIndex}
+              benchSize={bench.length}
+              isCaptain={captain === selected}
+              isVice={vice === selected}
+              selectedPct={selection[selected]}
+              onCaptain={() => makeCaptain(selected)}
+              onVice={() => makeVice(selected)}
+              onMoveBench={(dir) => moveBench(selBenchIndex, dir)}
+              onSub={() => { const id = selected; setSelected(null); handleSwap(id) }}
+              onRemove={() => removePlayer(selected)}
+              onClose={() => setSelected(null)}
+            />
           )}
 
           <div className="save-bar">
@@ -432,7 +408,7 @@ export default function MyTeam() {
                   <div className="player-info">
                     <span className="player-name">{p.name}</span>
                     <span className="player-meta">
-                      <HouseBadge house={p.house} /> · {p.position}
+                      <HouseBadge house={p.house} /> · {p.position} · {selection[p.id] ?? 0}% sel.
                     </span>
                   </div>
                   <span className="price">{fmt(p.price)}</span>
