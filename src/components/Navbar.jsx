@@ -16,6 +16,7 @@ export default function Navbar() {
         <nav className="nav-links">
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/team">My Team</NavLink>
+          {session && <NavLink to={`/manager/${session.user.id}`}>Points</NavLink>}
           <NavLink to="/leaderboard">Leaderboard</NavLink>
           {profile?.is_admin && <NavLink to="/admin">Admin</NavLink>}
         </nav>
