@@ -1472,3 +1472,33 @@ a.player-card {
   .sheet-hero h2 { font-size: 1.6rem; }
   .sheet-stats, .sheet-boxes { padding: 0.65rem; }
 }
+
+/* ---------- Private leagues ---------- */
+.lb-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start; }
+@media (max-width: 860px) { .lb-layout { grid-template-columns: 1fr; } }
+.lb-title { margin-top: 0; }
+
+.league-panel {
+  display: grid; gap: 0.9rem; padding: 1rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.league-panel h2 { font-size: 1.4rem; }
+.league-list { display: grid; gap: 0.5rem; }
+.league-item {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+  padding: 0.6rem 0.8rem; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.league-item:hover { border-color: var(--accent); }
+.league-item small { display: block; color: var(--muted); font-size: 0.75rem; margin-top: 0.1rem; }
+.league-rank { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.league-form { display: flex; gap: 0.5rem; }
+.league-form .btn-small { min-width: 68px; }
+.code-input { text-transform: uppercase; letter-spacing: 0.12em; }
+
+.league-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.code-chip {
+  padding: 0.4rem 0.8rem; border: 1px dashed var(--accent); border-radius: 8px;
+  background: var(--bg); color: var(--accent);
+  font-family: ui-monospace, monospace; font-size: 1.1rem; letter-spacing: 0.15em;
+}

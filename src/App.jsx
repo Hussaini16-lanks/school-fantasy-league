@@ -10,6 +10,8 @@ import Admin from './pages/Admin'
 import PlayerProfile from './pages/PlayerProfile'
 import ManagerTeam from './pages/ManagerTeam'
 import CheckIn from './pages/CheckIn'
+import League from './pages/League'
+import JoinLeague from './pages/JoinLeague'
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
             <Route path="/player/:id" element={<PlayerProfile />} />
             <Route path="/manager/:id" element={<ManagerTeam />} />
             <Route path="/checkin/:fixtureId" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
+            <Route path="/leagues/:id" element={<ProtectedRoute><League /></ProtectedRoute>} />
+            <Route path="/leagues/join/:code" element={<ProtectedRoute><JoinLeague /></ProtectedRoute>} />
             <Route path="*" element={<p className="status">Page not found.</p>} />
           </Routes>
         </main>
