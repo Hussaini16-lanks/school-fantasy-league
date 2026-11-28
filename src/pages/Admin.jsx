@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { QRCodeSVG } from 'qrcode.react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 import HouseBadge from '../components/HouseBadge'
@@ -24,6 +25,11 @@ export default function Admin() {
   const [linesLoading, setLinesLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState(null)
+
+  // QR check-in for the open game
+  const [qrCode, setQrCode] = useState(null)
+  const [checkins, setCheckins] = useState(0)
+  const [showQr, setShowQr] = useState(false)
 
   // ---------- Load games + players ----------
   async function loadFixtures() {
@@ -72,7 +78,15 @@ export default function Admin() {
     setMessage(null)
     setLinesLoading(true)
 
-    const { data, error } = await supabase.from('player_stats').select('*').eq('fixture_id', f.id)
+    const [statsRes, codeRes, countRes] = await Promise.all([
+      supabase.from('player_stats').select('*').eq('fixture_id', f.id),
+      supabase.from('fixture_checkin_codes').select('code').eq('fixture_id', f.id).single(),
+      supabase.from('attendance').select('id', { count: 'exact', head: true }).eq('fixture_id', f.id),
+    ])
+    setQrCode(codeRes.data?.code ?? null)
+    setCheckins(countRes.count ?? 0)
+
+    const { data, error } = statsRes
     if (error) {
       setMessage({ type: 'error', text: error.message })
       setLinesLoading(false)
@@ -115,6 +129,9 @@ export default function Admin() {
   }
 
   const fixture = fixtures.find((f) => f.id === fixtureId)
+  const checkinUrl = fixture && qrCode
+    ? `${window.location.origin}/checkin/${fixture.id}?code=${qrCode}`
+    : ''
 
   function teamTotal(houseId) {
     return players
@@ -289,6 +306,36 @@ export default function Admin() {
                 </label>
               </div>
 
+              {/* ---------- QR check-in ---------- */}
+              <div className="qr-panel">
+                <div className="qr-info">
+                  <h3>Attendance QR</h3>
+                  <p className="muted">
+                    Show this at the venue. Fans scan it while the game is <strong>Live</strong> to
+                    earn +5 points.
+                  </p>
+                  <p><strong>{checkins}</strong> fan{checkins === 1 ? '' : 's'} checked in</p>
+                  {fixture.status !== 'live' && (
+                    <p className="hint">Check-in is closed. Set Status to Live and save to open it.</p>
+                  )}
+                  <div className="qr-actions">
+                    <button className="btn-ghost" onClick={() => setShowQr(true)} disabled={!qrCode}>
+                      Show full screen
+                    </button>
+                    {qrCode && (
+                      <a className="link-btn" href={checkinUrl} target="_blank" rel="noreferrer">
+                        Test link ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+                {qrCode && (
+                  <div className="qr-box">
+                    <QRCodeSVG value={checkinUrl} size={140} />
+                  </div>
+                )}
+              </div>
+
               {renderHouseTable(fixture.home, homeScore, setHomeScore)}
               {renderHouseTable(fixture.away, awayScore, setAwayScore)}
 
@@ -297,8 +344,11 @@ export default function Admin() {
                   Only ticked players count as having played. Unticked starters get auto-subbed in managers' teams.
                   The +2 win bonus only applies once the game is marked <strong>Finished</strong>.
                 </p>
-                                {status !== 'finished' && (
-                  <p className="hint">⚠ This game is still <strong>{status}</strong>. Set it to <strong>Finished</strong> when it's over, or scores won't show on Home and there's no win bonus.</p>
+                {status !== 'finished' && (
+                  <p className="hint">
+                    ⚠ This game is still <strong>{status}</strong>. Set it to <strong>Finished</strong> when
+                    it's over, or scores won't show on Home and there's no win bonus.
+                  </p>
                 )}
                 {message && <p className={message.type}>{message.text}</p>}
                 <button className="btn" disabled={saving} onClick={save}>
@@ -309,6 +359,21 @@ export default function Admin() {
           )}
         </section>
       </div>
+
+      {/* Full-screen QR for showing at the venue */}
+      {showQr && fixture && qrCode && (
+        <div className="qr-overlay" onClick={() => setShowQr(false)}>
+          <div className="qr-big" onClick={(e) => e.stopPropagation()}>
+            <p className="eyebrow">Scan to check in · +5 points</p>
+            <h2>{fixture.home.name} vs {fixture.away.name}</h2>
+            <div className="qr-box big">
+              <QRCodeSVG value={checkinUrl} size={300} />
+            </div>
+            <p className="muted">PAU Fantasy · Coupe de Escrivá</p>
+            <button className="btn-ghost" onClick={() => setShowQr(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </>
   )
 }

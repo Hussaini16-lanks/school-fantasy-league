@@ -1,11 +1,19 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 
 export default function Login() {
   const { session } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Where to go after logging in: back to the page they came from
+  // (e.g. a QR check-in), otherwise My Team
+  const from = location.state?.from
+    ? location.state.from.pathname + location.state.from.search
+    : '/team'
+
   const [mode, setMode] = useState('signin') // 'signin' or 'signup'
   const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
@@ -13,8 +21,8 @@ export default function Login() {
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  // Already logged in? Go straight to My Team
-  if (session) return <Navigate to="/team" replace />
+  // Already logged in? Send them on
+  if (session) return <Navigate to={from} replace />
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -32,7 +40,7 @@ export default function Login() {
 
     setBusy(false)
     if (error) setError(error.message)
-    else navigate('/team')
+    else navigate(from, { replace: true })
   }
 
   const isSignup = mode === 'signup'

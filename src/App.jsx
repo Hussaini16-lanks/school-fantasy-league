@@ -9,6 +9,7 @@ import Leaderboard from './pages/Leaderboard'
 import Admin from './pages/Admin'
 import PlayerProfile from './pages/PlayerProfile'
 import ManagerTeam from './pages/ManagerTeam'
+import CheckIn from './pages/CheckIn'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/player/:id" element={<PlayerProfile />} />
             <Route path="/manager/:id" element={<ManagerTeam />} />
+            <Route path="/checkin/:fixtureId" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
             <Route path="*" element={<p className="status">Page not found.</p>} />
           </Routes>
         </main>
