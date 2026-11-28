@@ -34,7 +34,7 @@ from (values
   ('Emmanuel', 'Madiba', 'Guard', 4, 7.0),
   ('Chibi', 'Madiba', 'Forward', 20, 12.0),
   ('Okpala', 'Madiba', 'Guard', 8, 10.0),
-  ('Nifemi', 'Madiba', 'Guard', 5, 7.0),
+  ('Peter', 'Madiba', 'Forward', 5, 8.5),
   ('Pascal', 'Blue Jays', 'Forward', 32, 8.5),
   ('Kamara', 'TSG', 'Guard', 11, 7.0),
   ('Siri', 'Blue Jays', 'Guard', 8, 8.5),
@@ -54,7 +54,7 @@ from (values
   ('Ayuba', 'Blue Jays', 'Forward', 25, 10.0),
   ('Miracle', 'Blue Jays', 'Guard', 4, 12.0),
   ('Iyin', 'Blue Jays', 'Guard', 12, 10.0),
-  ('Obinna', 'Madiba', 'Forward', 0, 8.5),
+  ('Isaac', 'Madiba', 'Forward', 0, 10.0),
   ('Alex', 'Blue Jays', 'Forward', 33, 7.0),
   ('Mitch', 'TSG', 'Guard', 20, 8.5),
   ('Roy', 'Madiba', 'Guard', 15, 7.0)
