@@ -1355,3 +1355,49 @@ a.player-card {
     overflow-x: auto;
   }
 }
+
+/* ---------- Admin ---------- */
+.admin-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 800px) { .admin-layout { grid-template-columns: 1fr; } }
+
+.admin-list { display: grid; gap: 1rem; }
+.admin-gw { font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--muted); }
+.fixture-btn {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+  width: 100%; margin-bottom: 0.4rem; padding: 0.6rem 0.8rem;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  font: inherit; font-weight: 600; cursor: pointer; text-align: left;
+}
+.fixture-btn:hover { border-color: var(--accent); }
+.fixture-btn.active { border-color: var(--accent); background: var(--accent-soft); }
+.status-pill {
+  padding: 0.1rem 0.5rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  background: var(--surface-2); color: var(--muted);
+}
+.status-pill.live { background: #f87171; color: #04122e; }
+.status-pill.finished { background: #4ade80; color: #04122e; }
+
+.admin-editor { display: grid; gap: 1.5rem; }
+.admin-editor-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+.admin-editor-head h2 { font-size: 1.8rem; }
+.status-field { min-width: 160px; }
+
+.admin-team { display: grid; gap: 0.6rem; }
+.admin-team-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: 1.1rem; }
+.admin-team-actions { display: flex; gap: 1rem; font-size: 0.85rem; }
+.score-entry { display: flex; align-items: center; gap: 0.5rem; }
+.score-input { width: 90px; flex: none; font-size: 1.1rem; font-weight: 700; text-align: center; }
+
+.admin-table td { padding: 0.4rem 0.5rem; }
+.admin-table tr.not-played td { opacity: 0.45; }
+.admin-table tr.not-played td:first-child { opacity: 1; }
+.played-box { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.stat-input {
+  width: 3.4rem; padding: 0.35rem; text-align: center;
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; font: inherit;
+}
+.stat-input:focus { outline: none; border-color: var(--accent); }
+.stat-input:disabled { opacity: 0.5; }
