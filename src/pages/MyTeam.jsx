@@ -4,6 +4,7 @@ import HouseBadge from '../components/HouseBadge'
 import Court from '../components/Court'
 import Jersey from '../components/Jersey'
 import PlayerSheet from '../components/PlayerSheet'
+import TeamNameEditor from '../components/TeamNameEditor'
 
 const fmt = (n) => Number(n).toFixed(1)
 const round1 = (n) => Math.round(n * 10) / 10
@@ -292,6 +293,7 @@ export default function MyTeam() {
             {team.gameweek.name} · Deadline {formatDate(team.gameweek.deadline)}
           </p>
           <h1>My Team</h1>
+          <TeamNameEditor />
         </div>
         <div className="stats-row">
           <div className={`stat ${remaining < 0 ? 'warn' : ''}`}>

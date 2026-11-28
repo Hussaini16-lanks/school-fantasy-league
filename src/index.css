@@ -338,8 +338,8 @@ h3 {
 }
 
 .btn:disabled {
-  opacity: 0.6;
-  cursor: wait;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-ghost {
@@ -1429,3 +1429,14 @@ a.player-card {
 .checkin-icon.ok { background: #4ade80; }
 .checkin-icon.bad { background: #f87171; }
 .checkin-btn { display: inline-block; margin-top: 0.5rem; text-decoration: none; }
+
+/* ---------- Team name ---------- */
+.team-name {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; padding: 0;
+  background: none; border: none; color: var(--muted);
+  font: inherit; font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+.team-name:hover { color: var(--accent); }
+.edit-icon { font-size: 0.85rem; }
+.team-name-form { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+.team-name-form .input { max-width: 220px; }
